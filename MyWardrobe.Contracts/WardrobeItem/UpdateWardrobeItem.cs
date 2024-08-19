@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MyWardrobe.Contracts.WardrobeItem
 {
     public record UpdateWardrobeItem(
-        Guid id,
+        Guid Id,
         string Category,
         string Subcategory,
         string Brand,

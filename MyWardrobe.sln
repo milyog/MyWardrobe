@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWardrobe2", "MyWardrobe2\MyWardrobe2.csproj", "{14CABD40-11FE-4EBB-823F-0A7A85080C7F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWardrobe", "MyWardrobe2\MyWardrobe.csproj", "{14CABD40-11FE-4EBB-823F-0A7A85080C7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyWardrobe.Contracts", "MyWardrobe.Contracts\MyWardrobe.Contracts.csproj", "{2DE5D911-F12C-49C1-99A8-F84252D23C14}"
 EndProject

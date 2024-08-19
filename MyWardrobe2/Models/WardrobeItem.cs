@@ -1,4 +1,4 @@
-﻿namespace MyWardrobe2.Models
+﻿namespace MyWardrobe.Models
 {
     public class WardrobeItem
     {

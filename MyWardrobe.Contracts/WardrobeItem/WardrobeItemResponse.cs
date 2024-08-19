@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace MyWardrobe.Contracts.WardrobeItem
 {
     public record WardrobeItemResponse(
-        Guid id,
+        Guid Id,
         string Category,
         string Subcategory,
-        string Brand,
+        string Brand, 
         string Model,
         decimal Price,
         string Material,

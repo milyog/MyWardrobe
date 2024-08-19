@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyWardrobe.Contracts.WardrobeItem;
-using MyWardrobe2.Models;
+using MyWardrobe.Models;
 
 namespace MyWardrobe.Controllers
 {
@@ -43,6 +43,8 @@ namespace MyWardrobe.Controllers
                 routeValues: new {id = wardrobeItem.Id},
                 value: response);
         }
+
+        // GET ALL ITEMS också.
 
         [HttpGet("{id:guid}")]
         public ActionResult GetWardrobeItem(Guid id)

@@ -1,5 +1,5 @@
 
-namespace MyWardrobe2
+namespace MyWardrobe
 {
     public class Program
     {
