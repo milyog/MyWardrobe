@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyWardrobe.Contracts.WardrobeItem;
 using MyWardrobe.Models;
+using MyWardrobe.Services.WardrobeItems;
 
 namespace MyWardrobe.Controllers
 {
@@ -9,6 +10,13 @@ namespace MyWardrobe.Controllers
     [ApiController]
     public class WardrobeItemsController : ControllerBase
     {
+        private readonly IWardrobeItemService _wardrobeItemService;
+
+        public WardrobeItemsController(IWardrobeItemService wardrobeItemService)
+        {
+            _wardrobeItemService = wardrobeItemService;
+        }
+
         [HttpPost]
         public ActionResult CreateWardrobeItem(CreateWardrobeItemRequest request)
         {
@@ -24,7 +32,7 @@ namespace MyWardrobe.Controllers
                 request.Size,
                 request.Description);
 
-            // Att göra: spara till databas
+            _wardrobeItemService.CreateWardrobeItem(wardrobeItem);
 
             var response = new WardrobeItemResponse(
                 wardrobeItem.Id,
@@ -44,12 +52,18 @@ namespace MyWardrobe.Controllers
                 value: response);
         }
 
-        // GET ALL ITEMS också.
+        [HttpGet]
+        public ActionResult GetWardrobeItems()
+        {
+            List<WardrobeItem> wardrobeItems = _wardrobeItemService.GetWardrobeItems();
+            return Ok(wardrobeItems);
+        }
 
         [HttpGet("{id:guid}")]
         public ActionResult GetWardrobeItem(Guid id)
         {
-            return Ok(id);
+            WardrobeItem wardrobeItem = _wardrobeItemService.GetWardrobeItem(id);
+            return Ok(wardrobeItem);
         }
 
         [HttpPut("{id:guid}")]
