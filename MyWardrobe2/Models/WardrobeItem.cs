@@ -1,4 +1,6 @@
-﻿namespace MyWardrobe.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MyWardrobe.Models
 {
     public class WardrobeItem
     {
