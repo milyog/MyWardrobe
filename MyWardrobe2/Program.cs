@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyWardrobe.Data;
 using MyWardrobe.Services.WardrobeItems;
+using MyWardrobe.Services.WardrobeItemsUsage;
 
 namespace MyWardrobe
 {
@@ -17,11 +18,12 @@ namespace MyWardrobe
 
             builder.Services.AddControllers();
             builder.Services.AddScoped<IWardrobeItemService, WardrobeItemService>();
+            builder.Services.AddScoped<IWardrobeItemUsageService, WardrobeItemUsageService>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<DataContext>(options =>
+            builder.Services.AddDbContext<MyWardrobeDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
             });
@@ -34,6 +36,8 @@ namespace MyWardrobe
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseExceptionHandler("/error");
 
             app.UseHttpsRedirection();
 

@@ -12,8 +12,8 @@ using MyWardrobe.Data;
 namespace MyWardrobe.Migrations
 {
     [DbContext(typeof(MyWardrobeDbContext))]
-    [Migration("20240826120506_InitalMigration")]
-    partial class InitalMigration
+    [Migration("20240925152124_AddUsage")]
+    partial class AddUsage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,15 +40,12 @@ namespace MyWardrobe.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Color")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Material")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Model")
@@ -59,7 +56,6 @@ namespace MyWardrobe.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Size")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Subcategory")
@@ -69,6 +65,44 @@ namespace MyWardrobe.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WardrobeItems");
+                });
+
+            modelBuilder.Entity("MyWardrobe.Models.WardrobeItemUsage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ItemUsageDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("WardrobeItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("WardrobeItemUsageCounter")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WardrobeItemId");
+
+                    b.ToTable("WardrobeItemsUsage");
+                });
+
+            modelBuilder.Entity("MyWardrobe.Models.WardrobeItemUsage", b =>
+                {
+                    b.HasOne("MyWardrobe.Models.WardrobeItem", "WardrobeItem")
+                        .WithMany("WardrobeItemUsages")
+                        .HasForeignKey("WardrobeItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WardrobeItem");
+                });
+
+            modelBuilder.Entity("MyWardrobe.Models.WardrobeItem", b =>
+                {
+                    b.Navigation("WardrobeItemUsages");
                 });
 #pragma warning restore 612, 618
         }
