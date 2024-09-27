@@ -6,16 +6,18 @@ using System.Threading.Tasks;
 
 namespace MyWardrobe.Contracts.WardrobeItem
 {
-    public record WardrobeItemResponse(
-        Guid Id,
-        string Category,
-        string Subcategory,
-        string Brand, 
-        string Model,
-        decimal Price,
-        string Material,
-        string Color,
-        string Size,
-        string Description);
-        //List<UsageLog> UsageLogs);
+    //public record WardrobeItemResponse(
+    //    Guid Id,
+    //    string Category,
+    //    string Subcategory,
+    //    string Brand, 
+    //    string Model,
+    //    decimal Price,
+    //    string? Material,
+    //    string? Color,
+    //    string? Size,
+    //    string? Description
+    //    //List<WardrobeItemUsageDto>? WardrobeItemUsages
+    //    );
+        
 }

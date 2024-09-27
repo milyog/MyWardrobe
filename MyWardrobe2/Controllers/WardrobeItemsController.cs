@@ -34,17 +34,7 @@ namespace MyWardrobe.Controllers
 
             _wardrobeItemService.CreateWardrobeItem(wardrobeItem);
 
-            var response = new WardrobeItemResponse(
-                wardrobeItem.Id,
-                wardrobeItem.Category,
-                wardrobeItem.Subcategory,
-                wardrobeItem.Brand,
-                wardrobeItem.Model,
-                wardrobeItem.Price,
-                wardrobeItem.Material,
-                wardrobeItem.Color,
-                wardrobeItem.Size,
-                wardrobeItem.Description);
+            WardrobeItemResponse response = MapWardrobeItemResponse(wardrobeItem);
 
             return CreatedAtAction(
                 actionName: nameof(GetWardrobeItem),
@@ -56,26 +46,73 @@ namespace MyWardrobe.Controllers
         public ActionResult GetWardrobeItems()
         {
             List<WardrobeItem> wardrobeItems = _wardrobeItemService.GetWardrobeItems();
-            return Ok(wardrobeItems);
+
+            var responseCollection = new List<WardrobeItemResponse>();
+
+            foreach (var item in wardrobeItems)
+            {
+                var response = MapWardrobeItemResponse(item);
+
+                responseCollection.Add(response);
+            }
+
+            return Ok(responseCollection);
         }
 
         [HttpGet("{id:guid}")]
         public ActionResult GetWardrobeItem(Guid id)
         {
-            WardrobeItem wardrobeItem = _wardrobeItemService.GetWardrobeItem(id);
-            return Ok(wardrobeItem);
+            var wardrobeItem = _wardrobeItemService.GetWardrobeItem(id);
+            
+            var response = MapWardrobeItemResponse(wardrobeItem);
+
+            return Ok(response);
         }
 
         [HttpPut("{id:guid}")]
         public ActionResult UpdateWardrobeItem(Guid id, UpdateWardrobeItem request)
         {
-            return Ok(request);
+            var wardrobeItem = new WardrobeItem(
+                id,
+                request.Category,
+                request.Subcategory,
+                request.Brand,
+                request.Model,
+                request.Price,
+                request.Material,
+                request.Color,
+                request.Size,
+                request.Description
+                );
+
+            _wardrobeItemService.UpdateWardrobeItem(wardrobeItem);
+
+            return NoContent(); 
         }
 
         [HttpDelete("{id:guid}")]
         public ActionResult DeleteWardrobeItem(Guid id)
         {
-            return Ok(id);
+            _wardrobeItemService.DeleteWardrobeItem(id);
+
+            return NoContent();
+        }
+
+        private static WardrobeItemResponse MapWardrobeItemResponse(WardrobeItem wardrobeItem)
+        {
+            return new WardrobeItemResponse(
+                wardrobeItem.Id,
+                wardrobeItem.Category,
+                wardrobeItem.Subcategory,
+                wardrobeItem.Brand,
+                wardrobeItem.Model,
+                wardrobeItem.Price,
+                wardrobeItem.Material,
+                wardrobeItem.Color,
+                wardrobeItem.Size,
+                wardrobeItem.Description,
+                wardrobeItem.WardrobeItemUsages
+                );
         }
     }
 }
