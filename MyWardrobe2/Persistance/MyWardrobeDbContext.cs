@@ -15,17 +15,10 @@ namespace MyWardrobe.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<WardrobeItemUsage>()
-            //    .HasOne(x => x.WardrobeItem)
-            //    .WithMany(x => x.WardrobeItemUsages)
-            //    .HasForeignKey(x => x.WardrobeItemId);
-
             modelBuilder.Entity<WardrobeItem>()
                 .HasMany(x => x.WardrobeItemUsages)
                 .WithOne(x => x.WardrobeItem)
-                .HasForeignKey(x => x.WardrobeItemId);
-
-            //base.OnModelCreating(modelBuilder);
+                .HasForeignKey(x => x.WardrobeItemId); 
         }
     }
 }

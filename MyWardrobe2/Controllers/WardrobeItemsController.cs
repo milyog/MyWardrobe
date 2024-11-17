@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using MyWardrobe.Contracts.WardrobeItem;
 using MyWardrobe.Models;
 using MyWardrobe.Services.WardrobeItems;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MyWardrobe.Controllers
 {
@@ -11,15 +14,33 @@ namespace MyWardrobe.Controllers
     public class WardrobeItemsController : ControllerBase
     {
         private readonly IWardrobeItemService _wardrobeItemService;
+        private readonly IValidator<CreateWardrobeItemRequest> _validator;
 
-        public WardrobeItemsController(IWardrobeItemService wardrobeItemService)
+        public WardrobeItemsController(IWardrobeItemService wardrobeItemService, IValidator<CreateWardrobeItemRequest> validator)
         {
             _wardrobeItemService = wardrobeItemService;
+            _validator = validator;
         }
 
         [HttpPost]
         public ActionResult CreateWardrobeItem(CreateWardrobeItemRequest request)
-        {
+        {   
+            ValidationResult validationResult = _validator.Validate(request);
+
+            if(!validationResult.IsValid)
+            {
+                var modelStateDictionary = new ModelStateDictionary();
+
+                foreach (ValidationFailure failure in validationResult.Errors)
+                {
+                    modelStateDictionary.AddModelError(
+                        failure.PropertyName,
+                        failure.ErrorMessage);
+                }
+
+                return ValidationProblem(modelStateDictionary);
+            }
+
             var wardrobeItem = new WardrobeItem(
                 Guid.NewGuid(),
                 request.Category,
