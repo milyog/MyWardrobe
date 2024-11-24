@@ -14,31 +14,27 @@ namespace MyWardrobe.Controllers
     public class WardrobeItemsController : ControllerBase
     {
         private readonly IWardrobeItemService _wardrobeItemService;
-        private readonly IValidator<CreateWardrobeItemRequest> _validator;
+        private readonly IValidator<CreateWardrobeItemRequest> _createValidator;
+        private readonly IValidator<UpdateWardrobeItem> _updateValidator;
 
-        public WardrobeItemsController(IWardrobeItemService wardrobeItemService, IValidator<CreateWardrobeItemRequest> validator)
+        public WardrobeItemsController(
+            IWardrobeItemService wardrobeItemService, 
+            IValidator<CreateWardrobeItemRequest> createVvalidator,
+            IValidator<UpdateWardrobeItem> updateValidator)
         {
             _wardrobeItemService = wardrobeItemService;
-            _validator = validator;
+            _createValidator = createVvalidator;
+            _updateValidator = updateValidator;
         }
 
         [HttpPost]
         public ActionResult CreateWardrobeItem(CreateWardrobeItemRequest request)
         {   
-            ValidationResult validationResult = _validator.Validate(request);
+            ValidationResult validationResult = _createValidator.Validate(request);
 
             if(!validationResult.IsValid)
             {
-                var modelStateDictionary = new ModelStateDictionary();
-
-                foreach (ValidationFailure failure in validationResult.Errors)
-                {
-                    modelStateDictionary.AddModelError(
-                        failure.PropertyName,
-                        failure.ErrorMessage);
-                }
-
-                return ValidationProblem(modelStateDictionary);
+                return ValidationErrors(validationResult);
             }
 
             var wardrobeItem = new WardrobeItem(
@@ -93,6 +89,13 @@ namespace MyWardrobe.Controllers
         [HttpPut("{id:guid}")]
         public ActionResult UpdateWardrobeItem(Guid id, UpdateWardrobeItem request)
         {
+            ValidationResult validationResult = _updateValidator.Validate(request);
+
+            if (!validationResult.IsValid)
+            {
+                return ValidationErrors(validationResult);
+            }
+
             var wardrobeItem = new WardrobeItem(
                 id,
                 request.Category,
@@ -134,6 +137,20 @@ namespace MyWardrobe.Controllers
                 wardrobeItem.Description,
                 wardrobeItem.WardrobeItemUsages
                 );
+        }
+
+        private ActionResult ValidationErrors(ValidationResult validationResult)
+        {
+            var modelStateDictionary = new ModelStateDictionary();
+
+            foreach (ValidationFailure failure in validationResult.Errors)
+            {
+                modelStateDictionary.AddModelError(
+                    failure.PropertyName,
+                    failure.ErrorMessage);
+            }
+
+            return ValidationProblem(modelStateDictionary);
         }
     }
 }
