@@ -5,7 +5,6 @@ using MyWardrobe.Contracts.WardrobeItem;
 using MyWardrobe.Data;
 using MyWardrobe.Services.WardrobeItems;
 using MyWardrobe.Services.WardrobeItemsUsage;
-using FluentValidation;
 using MyWardrobe.Validations;
 
 namespace MyWardrobe
@@ -24,6 +23,7 @@ namespace MyWardrobe
             builder.Services.AddScoped<IWardrobeItemService, WardrobeItemService>();
             builder.Services.AddScoped<IWardrobeItemUsageService, WardrobeItemUsageService>();
             builder.Services.AddScoped<IValidator<CreateWardrobeItemRequest>, CreateWardrobeItemRequestValidator>();
+            builder.Services.AddScoped<IValidator<UpdateWardrobeItem>, UpdateWardrobeItemValidator>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

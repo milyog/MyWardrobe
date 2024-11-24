@@ -3,10 +3,10 @@ using MyWardrobe.Contracts.WardrobeItem;
 
 namespace MyWardrobe.Validations
 {
-    public class CreateWardrobeItemRequestValidator : AbstractValidator<CreateWardrobeItemRequest>
+    public class UpdateWardrobeItemValidator : AbstractValidator<UpdateWardrobeItem>
     {
-        public CreateWardrobeItemRequestValidator()
-        {     
+        public UpdateWardrobeItemValidator() 
+        {
             RuleLevelCascadeMode = CascadeMode.Stop;
 
             RuleFor(x => x.Category).CategoryRules();
@@ -21,7 +21,7 @@ namespace MyWardrobe.Validations
             RuleFor(x => x.Size).SizeRules()
                 .When(x => !string.IsNullOrWhiteSpace(x.Size));
             RuleFor(x => x.Description).DescriptionRules()
-                .When(x => !string.IsNullOrWhiteSpace(x.Description)); 
+                .When(x => !string.IsNullOrWhiteSpace(x.Description));
         }
     }
 }
