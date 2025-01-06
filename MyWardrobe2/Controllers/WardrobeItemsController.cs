@@ -6,6 +6,7 @@ using MyWardrobe.Services.WardrobeItems;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using MyWardrobe.ErrorHandling;
 
 namespace MyWardrobe.Controllers
 {
@@ -80,6 +81,11 @@ namespace MyWardrobe.Controllers
         public ActionResult GetWardrobeItem(Guid id)
         {
             var wardrobeItem = _wardrobeItemService.GetWardrobeItem(id);
+
+            if (!wardrobeItem.IsSuccess)
+            {
+                return NotFound(wardrobeItem.Error);
+            }
             
             var response = MapWardrobeItemResponse(wardrobeItem);
 
@@ -120,6 +126,23 @@ namespace MyWardrobe.Controllers
             _wardrobeItemService.DeleteWardrobeItem(id);
 
             return NoContent();
+        }
+
+        private static WardrobeItemResponse MapWardrobeItemResponse(Result<WardrobeItem> wardrobeItem)
+        {
+            return new WardrobeItemResponse(
+                wardrobeItem.Value.Id,
+                wardrobeItem.Value.Category,
+                wardrobeItem.Value.Subcategory,
+                wardrobeItem.Value.Brand,
+                wardrobeItem.Value.Model,
+                wardrobeItem.Value.Price,
+                wardrobeItem.Value.Material,
+                wardrobeItem.Value.Color,
+                wardrobeItem.Value.Size,
+                wardrobeItem.Value.Description,
+                wardrobeItem.Value.WardrobeItemUsages
+                );
         }
 
         private static WardrobeItemResponse MapWardrobeItemResponse(WardrobeItem wardrobeItem)

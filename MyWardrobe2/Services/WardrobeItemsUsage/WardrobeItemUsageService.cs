@@ -20,7 +20,7 @@ namespace MyWardrobe.Services.WardrobeItemsUsage
         {
             var wardrobeItem = _wardrobeItemService.GetWardrobeItem(id);
 
-            int updatedWardrobeItemUsageCounter = UpdateWardrobeItemUsageCounter(wardrobeItem);
+            int updatedWardrobeItemUsageCounter = UpdateWardrobeItemUsageCounter(wardrobeItem.Value);
                
             var newWardrobeItemUsage = new WardrobeItemUsage
                 {

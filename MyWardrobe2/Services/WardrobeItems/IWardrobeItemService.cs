@@ -1,4 +1,5 @@
 ﻿using MyWardrobe.Contracts.WardrobeItem;
+using MyWardrobe.ErrorHandling;
 using MyWardrobe.Models;
 
 namespace MyWardrobe.Services.WardrobeItems
@@ -7,7 +8,7 @@ namespace MyWardrobe.Services.WardrobeItems
     {
         void CreateWardrobeItem(WardrobeItem wardrobeItem);
         List<WardrobeItem> GetWardrobeItems();
-        WardrobeItem GetWardrobeItem(Guid id);
+        Result<WardrobeItem> GetWardrobeItem(Guid id);
         void UpdateWardrobeItem(WardrobeItem wardrobeItem);
         void DeleteWardrobeItem(Guid id);
     }
