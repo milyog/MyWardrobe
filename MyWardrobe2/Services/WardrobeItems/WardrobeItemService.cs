@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyWardrobe.Contracts.WardrobeItem;
 using MyWardrobe.Data;
+using MyWardrobe.ErrorHandling;
 using MyWardrobe.Models;
 
 namespace MyWardrobe.Services.WardrobeItems
@@ -28,12 +29,24 @@ namespace MyWardrobe.Services.WardrobeItems
                 .ToList();
         }
 
-        public WardrobeItem GetWardrobeItem(Guid id)
+        public Result<WardrobeItem> GetWardrobeItem(Guid id)  //WardrobeItem
         {
-            return _context.WardrobeItems
-                .Include(x => x.WardrobeItemUsages.OrderBy(
-                    x => x.WardrobeItemUsageDateTime))
-                .FirstOrDefault(x => x.Id == id);
+            var result = _context.WardrobeItems
+               .Include(x => x.WardrobeItemUsages.OrderBy(
+                   x => x.WardrobeItemUsageDateTime))
+               .FirstOrDefault(x => x.Id == id);
+
+            if (result is null)
+            {
+                return Result<WardrobeItem>.Failure(WardrobeItemErrors.NotFound(id));
+            }
+
+            return Result<WardrobeItem>.Success(result);
+
+            //return _context.WardrobeItems
+            //    .Include(x => x.WardrobeItemUsages.OrderBy(
+            //        x => x.WardrobeItemUsageDateTime))
+            //    .FirstOrDefault(x => x.Id == id);
         }
                     
         public void UpdateWardrobeItem(WardrobeItem updatedWardrobeItem)
