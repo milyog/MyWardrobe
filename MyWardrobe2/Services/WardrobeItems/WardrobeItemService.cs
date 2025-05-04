@@ -21,12 +21,24 @@ namespace MyWardrobe.Services.WardrobeItems
             _context.SaveChanges();
         }
         
-        public List<WardrobeItem> GetWardrobeItems()
+        public Result<List<WardrobeItem>> GetWardrobeItems()
         {
-            return _context.WardrobeItems
+            var result = _context.WardrobeItems
                 .Include(x => x.WardrobeItemUsages.OrderBy(
                     x => x.WardrobeItemUsageDateTime))
                 .ToList();
+
+            if (result.Count == 0)
+            {
+                return Result<List<WardrobeItem>>.Failure(WardrobeItemErrors.NotFound());
+            }
+
+            return Result<List<WardrobeItem>>.Success(result);
+
+            //return _context.WardrobeItems
+            //    .Include(x => x.WardrobeItemUsages.OrderBy(
+            //        x => x.WardrobeItemUsageDateTime))
+            //    .ToList();
         }
 
         public Result<WardrobeItem> GetWardrobeItem(Guid id)  //WardrobeItem
