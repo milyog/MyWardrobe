@@ -63,11 +63,16 @@ namespace MyWardrobe.Controllers
         [HttpGet]
         public ActionResult GetWardrobeItems()
         {
-            List<WardrobeItem> wardrobeItems = _wardrobeItemService.GetWardrobeItems();
+            var wardrobeItems = _wardrobeItemService.GetWardrobeItems();
+
+            if (!wardrobeItems.IsSuccess)
+            {
+                return NotFound(wardrobeItems.Error);
+            }
 
             var responseCollection = new List<WardrobeItemResponse>();
 
-            foreach (var item in wardrobeItems)
+            foreach (var item in wardrobeItems.Value)
             {
                 var response = MapWardrobeItemResponse(item);
 

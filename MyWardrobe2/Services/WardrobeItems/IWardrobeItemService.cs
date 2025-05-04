@@ -7,7 +7,7 @@ namespace MyWardrobe.Services.WardrobeItems
     public interface IWardrobeItemService
     {
         void CreateWardrobeItem(WardrobeItem wardrobeItem);
-        List<WardrobeItem> GetWardrobeItems();
+        Result<List<WardrobeItem>> GetWardrobeItems();
         Result<WardrobeItem> GetWardrobeItem(Guid id);
         void UpdateWardrobeItem(WardrobeItem wardrobeItem);
         void DeleteWardrobeItem(Guid id);
