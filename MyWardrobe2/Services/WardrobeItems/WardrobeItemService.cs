@@ -15,10 +15,13 @@ namespace MyWardrobe.Services.WardrobeItems
         {
             _context = context;
         }
-        public void CreateWardrobeItem(WardrobeItem wardrobeItem)
+        public Result<WardrobeItem> CreateWardrobeItem(WardrobeItem wardrobeItem)
         {
             _context.WardrobeItems.Add(wardrobeItem);
             _context.SaveChanges();
+
+            // Failure saknas förnärvarande (jfr conrollern).
+            return Result<WardrobeItem>.Success(wardrobeItem);
         }
         
         public Result<List<WardrobeItem>> GetWardrobeItems()
@@ -34,14 +37,9 @@ namespace MyWardrobe.Services.WardrobeItems
             }
 
             return Result<List<WardrobeItem>>.Success(result);
-
-            //return _context.WardrobeItems
-            //    .Include(x => x.WardrobeItemUsages.OrderBy(
-            //        x => x.WardrobeItemUsageDateTime))
-            //    .ToList();
         }
 
-        public Result<WardrobeItem> GetWardrobeItem(Guid id)  //WardrobeItem
+        public Result<WardrobeItem> GetWardrobeItem(Guid id)
         {
             var result = _context.WardrobeItems
                .Include(x => x.WardrobeItemUsages.OrderBy(
@@ -54,25 +52,36 @@ namespace MyWardrobe.Services.WardrobeItems
             }
 
             return Result<WardrobeItem>.Success(result);
-
-            //return _context.WardrobeItems
-            //    .Include(x => x.WardrobeItemUsages.OrderBy(
-            //        x => x.WardrobeItemUsageDateTime))
-            //    .FirstOrDefault(x => x.Id == id);
         }
                     
-        public void UpdateWardrobeItem(WardrobeItem updatedWardrobeItem)
+        public Result<WardrobeItem> UpdateWardrobeItem(Guid id, WardrobeItem updatedWardrobeItem)
         {
+            var result = _context.WardrobeItems.FirstOrDefault(x => x.Id == id);
+
+            if (result is null)
+            {
+                return Result<WardrobeItem>.Failure(WardrobeItemErrors.NotFound(id));
+            }
+             
             _context.WardrobeItems.Update(updatedWardrobeItem);
             _context.SaveChanges();
+
+            return Result<WardrobeItem>.Success(result);
         }
 
-        public void DeleteWardrobeItem(Guid id) 
+        public Result DeleteWardrobeItem(Guid id) 
         {
-            var wardrobeItem = _context.WardrobeItems.Find(id);
+            var wardrobeItem = _context.WardrobeItems.FirstOrDefault(x => x.Id == id);
+
+            if (wardrobeItem is null)
+            {
+                return Result<WardrobeItem>.Failure(WardrobeItemErrors.NotFound(id));
+            }
 
             _context.WardrobeItems.Remove(wardrobeItem);
             _context.SaveChanges();
+
+            return Result.Success();
         }
     }
 }
