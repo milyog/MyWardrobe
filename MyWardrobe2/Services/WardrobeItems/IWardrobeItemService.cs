@@ -6,10 +6,10 @@ namespace MyWardrobe.Services.WardrobeItems
 {
     public interface IWardrobeItemService
     {
-        void CreateWardrobeItem(WardrobeItem wardrobeItem);
+        Result<WardrobeItem> CreateWardrobeItem(WardrobeItem wardrobeItem);
         Result<List<WardrobeItem>> GetWardrobeItems();
         Result<WardrobeItem> GetWardrobeItem(Guid id);
-        void UpdateWardrobeItem(WardrobeItem wardrobeItem);
-        void DeleteWardrobeItem(Guid id);
+        Result<WardrobeItem> UpdateWardrobeItem(Guid id, WardrobeItem wardrobeItem);
+        Result DeleteWardrobeItem(Guid id);
     }
 }

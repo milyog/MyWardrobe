@@ -50,9 +50,14 @@ namespace MyWardrobe.Controllers
                 request.Size,
                 request.Description);
 
-            _wardrobeItemService.CreateWardrobeItem(wardrobeItem);
+            var result =_wardrobeItemService.CreateWardrobeItem(wardrobeItem);
 
-            WardrobeItemResponse response = MapWardrobeItemResponse(wardrobeItem);
+            //if(!result.IsSuccess)   Om Failure läggs till (BadRequest är platshållare)
+            //{
+            //    return BadRequest(result.Error);
+            //}
+
+            WardrobeItemResponse response = MapWardrobeItemResponse(result.Value);
 
             return CreatedAtAction(
                 actionName: nameof(GetWardrobeItem),
@@ -120,7 +125,12 @@ namespace MyWardrobe.Controllers
                 request.Description
                 );
 
-            _wardrobeItemService.UpdateWardrobeItem(wardrobeItem);
+            var result = _wardrobeItemService.UpdateWardrobeItem(id, wardrobeItem);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.Error);
+            }
 
             return NoContent(); 
         }
@@ -128,7 +138,12 @@ namespace MyWardrobe.Controllers
         [HttpDelete("{id:guid}")]
         public ActionResult DeleteWardrobeItem(Guid id)
         {
-            _wardrobeItemService.DeleteWardrobeItem(id);
+            var result = _wardrobeItemService.DeleteWardrobeItem(id);
+
+            if ((!result.IsSuccess))
+            {
+                return NotFound(result.Error);
+            }
 
             return NoContent();
         }
