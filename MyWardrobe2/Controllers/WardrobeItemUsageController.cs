@@ -19,9 +19,9 @@ namespace MyWardrobe.Controllers
         }
 
         [HttpPost("{id:guid}")]
-        public ActionResult CreateWardrobeItemUsage(Guid id)
+        public async Task<ActionResult> CreateWardrobeItemUsage(Guid id)
         {
-            var wardrobeItemUsage = _wardrobeItemUsageService.CreateWardrobeItemUsage(id);
+            var wardrobeItemUsage = await _wardrobeItemUsageService.CreateWardrobeItemUsage(id);
 
             return CreatedAtAction(
                 actionName: nameof(GetWardrobeItemUsage),
@@ -30,9 +30,9 @@ namespace MyWardrobe.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public ActionResult GetWardrobeItemUsage(Guid id)
+        public async Task<ActionResult> GetWardrobeItemUsage(Guid id)
         {
-            var wardrobeItemUsage = _wardrobeItemUsageService.GetWardrobeItemUsage(id);
+            var wardrobeItemUsage = await _wardrobeItemUsageService.GetWardrobeItemUsage(id);
 
             return Ok(wardrobeItemUsage);
         }
