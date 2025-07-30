@@ -7,7 +7,7 @@ namespace MyWardrobe.Validations
     {
         public CreateWardrobeItemRequestValidator()
         {     
-            RuleLevelCascadeMode = CascadeMode.Stop;
+            //RuleLevelCascadeMode = CascadeMode.Stop; Om det ska avbrytas vid första felet.
 
             RuleFor(x => x.Category).CategoryRules();
             RuleFor(x => x.Subcategory).SubCategoryRules();

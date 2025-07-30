@@ -9,27 +9,27 @@ namespace MyWardrobe.Services.WardrobeItems
 {
     public class WardrobeItemService : IWardrobeItemService
     {
-        private readonly MyWardrobeDbContext _context;        
+        private readonly MyWardrobeDbContext _context;
 
         public WardrobeItemService(MyWardrobeDbContext context)
         {
             _context = context;
         }
-        public Result<WardrobeItem> CreateWardrobeItem(WardrobeItem wardrobeItem)
+        public async Task<Result<WardrobeItem>> CreateWardrobeItem(WardrobeItem wardrobeItem)
         {
-            _context.WardrobeItems.Add(wardrobeItem);
-            _context.SaveChanges();
+            await _context.WardrobeItems.AddAsync(wardrobeItem);
+            await _context.SaveChangesAsync();
 
             // Failure saknas förnärvarande (jfr conrollern).
             return Result<WardrobeItem>.Success(wardrobeItem);
         }
-        
-        public Result<List<WardrobeItem>> GetWardrobeItems()
+
+        public async Task<Result<List<WardrobeItem>>> GetWardrobeItems()
         {
-            var result = _context.WardrobeItems
-                .Include(x => x.WardrobeItemUsages.OrderBy(
-                    x => x.WardrobeItemUsageDateTime))
-                .ToList();
+            var result = await _context.WardrobeItems
+                .Include(x => x.WardrobeItemUsages
+                .OrderBy(x => x.WardrobeItemUsageDateTime))
+                .ToListAsync();
 
             if (result.Count == 0)
             {
@@ -39,12 +39,12 @@ namespace MyWardrobe.Services.WardrobeItems
             return Result<List<WardrobeItem>>.Success(result);
         }
 
-        public Result<WardrobeItem> GetWardrobeItem(Guid id)
+        public async Task<Result<WardrobeItem>> GetWardrobeItem(Guid id) 
         {
-            var result = _context.WardrobeItems
-               .Include(x => x.WardrobeItemUsages.OrderBy(
-                   x => x.WardrobeItemUsageDateTime))
-               .FirstOrDefault(x => x.Id == id);
+            var result = await _context.WardrobeItems
+               .Include(x => x.WardrobeItemUsages
+               .OrderBy(x => x.WardrobeItemUsageDateTime))
+               .FirstOrDefaultAsync(x => x.Id == id);
 
             if (result is null)
             {
@@ -53,25 +53,25 @@ namespace MyWardrobe.Services.WardrobeItems
 
             return Result<WardrobeItem>.Success(result);
         }
-                    
-        public Result<WardrobeItem> UpdateWardrobeItem(Guid id, WardrobeItem updatedWardrobeItem)
+
+        public async Task<Result<WardrobeItem>> UpdateWardrobeItem(Guid id, WardrobeItem updatedWardrobeItem)
         {
-            var result = _context.WardrobeItems.FirstOrDefault(x => x.Id == id);
+            var result = await _context.WardrobeItems.FirstOrDefaultAsync(x => x.Id == id);
 
             if (result is null)
             {
                 return Result<WardrobeItem>.Failure(WardrobeItemErrors.NotFound(id));
             }
-             
+
             _context.WardrobeItems.Update(updatedWardrobeItem);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Result<WardrobeItem>.Success(result);
         }
 
-        public Result DeleteWardrobeItem(Guid id) 
+        public async Task<Result> DeleteWardrobeItem(Guid id)
         {
-            var wardrobeItem = _context.WardrobeItems.FirstOrDefault(x => x.Id == id);
+            var wardrobeItem = await _context.WardrobeItems.FirstOrDefaultAsync(x => x.Id == id);
 
             if (wardrobeItem is null)
             {
@@ -79,7 +79,7 @@ namespace MyWardrobe.Services.WardrobeItems
             }
 
             _context.WardrobeItems.Remove(wardrobeItem);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Result.Success();
         }

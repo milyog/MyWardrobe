@@ -5,7 +5,7 @@ namespace MyWardrobe.Services.WardrobeItemsUsage
 {
     public interface IWardrobeItemUsageService
     {
-        WardrobeItemUsage CreateWardrobeItemUsage(Guid id);
-        WardrobeItemUsage GetWardrobeItemUsage(Guid id);
+        Task<WardrobeItemUsage> CreateWardrobeItemUsage(Guid id);
+        Task<WardrobeItemUsage> GetWardrobeItemUsage(Guid id);
     }
 }

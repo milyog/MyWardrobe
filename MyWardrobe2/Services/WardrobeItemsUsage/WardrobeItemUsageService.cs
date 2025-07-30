@@ -16,9 +16,9 @@ namespace MyWardrobe.Services.WardrobeItemsUsage
             _context = context;
             _wardrobeItemService = wardrobeItemService;
         } 
-        public WardrobeItemUsage CreateWardrobeItemUsage(Guid id)
+        public async Task<WardrobeItemUsage> CreateWardrobeItemUsage(Guid id)
         {
-            var wardrobeItem = _wardrobeItemService.GetWardrobeItem(id);
+            var wardrobeItem = await _wardrobeItemService.GetWardrobeItem(id);
 
             int updatedWardrobeItemUsageCounter = UpdateWardrobeItemUsageCounter(wardrobeItem.Value);
                
@@ -30,24 +30,24 @@ namespace MyWardrobe.Services.WardrobeItemsUsage
                     WardrobeItemId = id
                 };
 
-            _context.WardrobeItemsUsage.Add(newWardrobeItemUsage);
-            _context.SaveChanges();
+            await _context.WardrobeItemsUsage.AddAsync(newWardrobeItemUsage);
+            await _context.SaveChangesAsync();
 
             return newWardrobeItemUsage;
         }
 
-        public WardrobeItemUsage GetWardrobeItemUsage(Guid id)
+        public async Task<WardrobeItemUsage> GetWardrobeItemUsage(Guid id)
         {
-            return _context.WardrobeItemsUsage
-                .Include(x => x.WardrobeItem) 
-                .FirstOrDefault(x => x.Id == id);
+            return await _context.WardrobeItemsUsage
+                .Include(x => x.WardrobeItem)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
 
 
-        private static int UpdateWardrobeItemUsageCounter(WardrobeItem WardrobeItem)
+        private static int UpdateWardrobeItemUsageCounter(WardrobeItem wardrobeItem)
         {
-            var wardrobeItemUsageCounter = WardrobeItem.WardrobeItemUsages     
+            var wardrobeItemUsageCounter = wardrobeItem.WardrobeItemUsages     
                 .AsEnumerable()
                 .OrderByDescending(x => x.WardrobeItemUsageDateTime)                                                           
                 .Select(x => x.WardrobeItemUsageCounter)

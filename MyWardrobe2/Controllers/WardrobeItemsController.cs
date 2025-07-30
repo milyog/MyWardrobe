@@ -29,7 +29,7 @@ namespace MyWardrobe.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateWardrobeItem(CreateWardrobeItemRequest request)
+        public async Task<ActionResult> CreateWardrobeItem(CreateWardrobeItemRequest request)
         {   
             ValidationResult validationResult = _createValidator.Validate(request);
 
@@ -50,7 +50,7 @@ namespace MyWardrobe.Controllers
                 request.Size,
                 request.Description);
 
-            var result =_wardrobeItemService.CreateWardrobeItem(wardrobeItem);
+            var result = await _wardrobeItemService.CreateWardrobeItem(wardrobeItem);
 
             //if(!result.IsSuccess)   Om Failure läggs till (BadRequest är platshållare)
             //{
@@ -66,9 +66,9 @@ namespace MyWardrobe.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetWardrobeItems()
+        public async Task<ActionResult> GetWardrobeItems()
         {
-            var wardrobeItems = _wardrobeItemService.GetWardrobeItems();
+            var wardrobeItems = await _wardrobeItemService.GetWardrobeItems();
 
             if (!wardrobeItems.IsSuccess)
             {
@@ -88,9 +88,9 @@ namespace MyWardrobe.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public ActionResult GetWardrobeItem(Guid id)
+        public async Task<ActionResult> GetWardrobeItem(Guid id)
         {
-            var wardrobeItem = _wardrobeItemService.GetWardrobeItem(id);
+            var wardrobeItem = await _wardrobeItemService.GetWardrobeItem(id);
 
             if (!wardrobeItem.IsSuccess)
             {
@@ -103,7 +103,7 @@ namespace MyWardrobe.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public ActionResult UpdateWardrobeItem(Guid id, UpdateWardrobeItem request)
+        public async Task<ActionResult> UpdateWardrobeItem(Guid id, UpdateWardrobeItem request)
         {
             ValidationResult validationResult = _updateValidator.Validate(request);
 
@@ -125,7 +125,7 @@ namespace MyWardrobe.Controllers
                 request.Description
                 );
 
-            var result = _wardrobeItemService.UpdateWardrobeItem(id, wardrobeItem);
+            var result = await _wardrobeItemService.UpdateWardrobeItem(id, wardrobeItem);
 
             if (!result.IsSuccess)
             {
@@ -136,9 +136,9 @@ namespace MyWardrobe.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        public ActionResult DeleteWardrobeItem(Guid id)
+        public async Task<ActionResult> DeleteWardrobeItem(Guid id)
         {
-            var result = _wardrobeItemService.DeleteWardrobeItem(id);
+            var result = await _wardrobeItemService.DeleteWardrobeItem(id);
 
             if ((!result.IsSuccess))
             {
