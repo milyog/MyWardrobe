@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyWardrobe.Contracts.WardrobeItem;
 using MyWardrobe.Data;
+using MyWardrobe.ErrorHandling;
 using MyWardrobe.Models;
 using MyWardrobe.Services.WardrobeItems;
 
@@ -16,7 +17,7 @@ namespace MyWardrobe.Services.WardrobeItemsUsage
             _context = context;
             _wardrobeItemService = wardrobeItemService;
         } 
-        public async Task<WardrobeItemUsage> CreateWardrobeItemUsage(Guid id)
+        public async Task<Result<WardrobeItemUsage>> CreateWardrobeItemUsage(Guid id)
         {
             var wardrobeItem = await _wardrobeItemService.GetWardrobeItem(id);
 
@@ -33,14 +34,22 @@ namespace MyWardrobe.Services.WardrobeItemsUsage
             await _context.WardrobeItemsUsage.AddAsync(newWardrobeItemUsage);
             await _context.SaveChangesAsync();
 
-            return newWardrobeItemUsage;
+            // Failure saknas förnärvarande (jfr conrollern).
+            return Result<WardrobeItemUsage>.Success(newWardrobeItemUsage);
         }
 
-        public async Task<WardrobeItemUsage> GetWardrobeItemUsage(Guid id)
+        public async Task<Result<WardrobeItemUsage>> GetWardrobeItemUsage(Guid id)
         {
-            return await _context.WardrobeItemsUsage
+            var result = await _context.WardrobeItemsUsage
                 .Include(x => x.WardrobeItem)
                 .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (result is null)
+            {
+                return Result<WardrobeItemUsage>.Failure(WardrobeItemErrors.NotFound(id));
+            }
+
+            return Result<WardrobeItemUsage>.Success(result);
         }
 
 
