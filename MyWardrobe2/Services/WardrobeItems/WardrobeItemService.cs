@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using MyWardrobe.Contracts.WardrobeItem;
 using MyWardrobe.Data;
@@ -63,7 +64,17 @@ namespace MyWardrobe.Services.WardrobeItems
                 return Result<WardrobeItem>.Failure(WardrobeItemErrors.NotFound(id));
             }
 
-            _context.WardrobeItems.Update(updatedWardrobeItem);
+            result.Category = updatedWardrobeItem.Category;
+            result.Subcategory = updatedWardrobeItem.Subcategory;
+            result.Brand = updatedWardrobeItem.Brand;
+            result.Model = updatedWardrobeItem.Model;
+            result.Price = updatedWardrobeItem.Price;
+            result.Material = updatedWardrobeItem.Material;
+            result.Color = updatedWardrobeItem.Color;
+            result.Size = updatedWardrobeItem.Size;
+            result.Description = updatedWardrobeItem.Description;
+
+            _context.WardrobeItems.Update(result);
             await _context.SaveChangesAsync();
 
             return Result<WardrobeItem>.Success(result);
