@@ -168,6 +168,74 @@ namespace MyWardrobe.IntegrationTests
 
         #endregion
 
+        #region DELETE
+
+        [Fact]
+        public async Task DeleteExistingItem_ShouldRemoveItemFromDatabase()
+        {
+            // Arrange
+            var newItem = new
+            {
+                Category = "Skor",
+                Subcategory = "Löparskor",
+                Brand = "New Balance",
+                Model = "880",
+                Price = 1600,
+            };
+
+            var createNewItem = await Client.PostAsJsonAsync(BaseUri, newItem);
+            createNewItem.EnsureSuccessStatusCode();
+            var items = await Client.GetFromJsonAsync<WardrobeItemResponse[]>(BaseUri);
+            var item = items!.First();
+
+            // Act
+            var deleteResponse = await Client.DeleteAsync($"{BaseUri}/{item.Id}");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+            var remainingItems = await Client.GetFromJsonAsync<WardrobeItemResponse[]>(BaseUri);
+            Assert.DoesNotContain(remainingItems, i => i.Id == item.Id);
+        }
+
+        #endregion
+
+        #region USAGE
+
+        [Fact]
+        public async Task CreateNewWardrobeItemUsage_ShouldAddUsageToDatabase()
+        {
+            // Arrange
+            var newItem = new
+            {
+                Category = "Skor",
+                Subcategory = "Löparskor",
+                Brand = "New Balance",
+                Model = "880",
+                Price = 1600,
+            };
+
+            var createNewItem = await Client.PostAsJsonAsync(BaseUri, newItem);
+            createNewItem.EnsureSuccessStatusCode();
+            var items = await Client.GetFromJsonAsync<WardrobeItemResponse[]>(BaseUri);
+            var item = items!.First();
+
+            // Act
+            var newItemUsage = await Client.PostAsync($"{BaseUriItemUsage}/{item.Id}", null);
+
+            // Assert
+            newItemUsage.EnsureSuccessStatusCode();
+            var itemWithUsageAdded = await Client.GetFromJsonAsync<WardrobeItemResponse>($"{BaseUri}/{item.Id}");
+            Assert.NotNull(itemWithUsageAdded!.WardrobeItemUsages);
+            Assert.NotEmpty(itemWithUsageAdded.WardrobeItemUsages);
+
+            var latestItemUsage = itemWithUsageAdded.WardrobeItemUsages.Last();
+            Assert.Equal(1, latestItemUsage.WardrobeItemUsageCounter);
+            Assert.True(latestItemUsage.WardrobeItemUsageDateTime.Date == DateTime.Now.Date);
+
+        }
+
+        #endregion
 
     }
 }                   // Bryt ut upprepad kod - newItem etc. se best practice för test hos microsoft
+                    // Se över namngivning på metoder och variabler så att de är enhetlig
